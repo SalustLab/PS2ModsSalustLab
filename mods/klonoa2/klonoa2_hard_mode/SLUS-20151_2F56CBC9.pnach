@@ -2,8 +2,8 @@ gametitle=Klonoa 2: Lunatea's Veil (SLUS-20151) [2F56CBC9]
 
 [Hard Mode]
 author=Vinicius + Claude
-description=Hard Mode v1.1 - Max HP 2, no boss comeback 1UPs, small hearts heal only 20% of the time (Double always heals; a failed heart at 1 HP plays a cue), start with 2 lives, max 4 lives, enemies and bosses 1.25x faster (AI, movement, projectiles, animation).
-// Speed knobs (v1.1): TICK_MASK is the andi imm at 00266B88 and 00266BE8 (N=3 -> 1.25x, 1 -> 1.5x, 7 -> 1.125x, 0 -> 2x). MASK_ENEMY 00266A38, FLAG_200A 00266A3C, MASK_BOSS 00266A40/00266A44, EXCL_LEVELS from 00266A48, EXCL_SPECIES from 00266A50 (lists end with FFFFFFFF).
+description=Hard Mode v1.2 - Max HP 2, no boss comeback 1UPs, small hearts heal only 20% of the time (Double always heals; a failed heart at 1 HP plays a cue), start with 2 lives, max 4 lives, enemies and bosses 1.5x faster (AI, movement, projectiles, animation).
+// Speed knobs (v1.2): TICK_MASK is the andi imm at 00266B88 and 00266BE8 (N=1 -> 1.5x default, 3 -> 1.25x, 7 -> 1.125x, 0 -> 2x). MASK_ENEMY 00266A38, FLAG_200A 00266A3C, MASK_BOSS 00266A40/00266A44, EXCL_LEVELS from 00266A48, EXCL_SPECIES from 00266A50 (lists end with FFFFFFFF).
 // Speed cave lives in a dead function at 00266A30 (8 identical unreferenced copies in the ELF). Hooks: update loop 0x1A5C54, render passes 0x18DECC/0x18DF3C/0x18DFAC, anim advance 0x20E14C/0x20E180/0x20E1E0.
 // Heal chance knob: word at 0032DF34 is 'addiu at,zero,N' (2401000N): heal when rng % N == 0. N=5 -> 20% (default), N=4 -> 25%, N=10 -> 10%.
 // Fail-cue SFX knob: 64-bit id 000C80C85CA00400 is built by the 6 words at 0032DF70..0032DF84 (lui/ori/dsll/ori/dsll/ori; the 16-bit halves are the imm of words 1,2,4,6).
@@ -128,7 +128,7 @@ patch=1,EE,00266B78,word,0040F809 // speed cave
 patch=1,EE,00266B7C,word,00000000 // speed cave
 patch=1,EE,00266B80,word,3C010036 // speed cave
 patch=1,EE,00266B84,word,8C2168A4 // speed cave
-patch=1,EE,00266B88,word,30210003 // speed cave (KNOB TICK_MASK (andi imm N: extra tick when frame&N==0; edit B_TICK too))
+patch=1,EE,00266B88,word,30210001 // speed cave (KNOB TICK_MASK (andi imm N: extra tick when frame&N==0; edit B_TICK too))
 patch=1,EE,00266B8C,word,1420000D // speed cave
 patch=1,EE,00266B90,word,00000000 // speed cave
 patch=1,EE,00266B94,word,0C099A95 // speed cave
@@ -152,7 +152,7 @@ patch=1,EE,00266BD8,word,FFA40000 // speed cave
 patch=1,EE,00266BDC,word,FFA30008 // speed cave
 patch=1,EE,00266BE0,word,3C010036 // speed cave
 patch=1,EE,00266BE4,word,8C2168A4 // speed cave
-patch=1,EE,00266BE8,word,30210003 // speed cave (KNOB TICK_MASK (same N as A_TICK))
+patch=1,EE,00266BE8,word,30210001 // speed cave (KNOB TICK_MASK (same N as A_TICK))
 patch=1,EE,00266BEC,word,14200007 // speed cave
 patch=1,EE,00266BF0,word,00000000 // speed cave
 patch=1,EE,00266BF4,word,0C099A95 // speed cave

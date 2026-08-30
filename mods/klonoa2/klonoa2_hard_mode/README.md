@@ -1,6 +1,6 @@
-# Klonoa 2: Lunatea's Veil (USA) — Hard Mode **v1.1** (2026-08-30)
+# Klonoa 2: Lunatea's Veil (USA) — Hard Mode **v1.2** (2026-08-30)
 
-Patch for `SLUS_201.51` (NTSC-U, PCSX2 CRC `2F56CBC9`). Only the executable changes (230 words); no asset is touched. v1.0 items were tested in-game on PCSX2; the v1.1 speed-up is verified by disassembly and **awaits in-game validation** (see the checklist at the end).
+Patch for `SLUS_201.51` (NTSC-U, PCSX2 CRC `2F56CBC9`). Only the executable changes (230 words); no asset is touched. v1.0 items were tested in-game on PCSX2; the speed-up shipped in v1.1 (1.25×) was play-tested and bumped to **1.5×** in v1.2 — the exclusion checklist at the end is still open.
 
 ## What changes
 
@@ -13,7 +13,7 @@ Patch for `SLUS_201.51` (NTSC-U, PCSX2 CRC `2F56CBC9`). Only the executable chan
 | Boss "comeback" (1UP capsules when `lives < 3`, up to 2× per session) | active | **removed** |
 | Starting lives | 3 | **2** (0 is still playable → 3 attempts; applies to a **new save** — an existing save keeps its stored lives) |
 | Max lives | 99 | **4** |
-| **Enemies and bosses** (v1.1) | 60 ticks/s | **1.25× faster in every sense** — AI timers, movement, attacks, projectiles, hitboxes *and* animation, all together (the object gets 5 update ticks and 5 animation steps every 4 frames). Klonoa, items, moving platforms/traps and the camera stay at normal speed. **Not affected**: an enemy while Klonoa holds it (and its held-timer), a thrown enemy, Polonte the Hatchling, King of Sorrow phase 1, the Biskarsh tank in the Volk Inferno chase (the regular enemies of that area are still 1.25×), scripted mini-bosses (Pop-Up Tat) and the boss "comeback" capsules. |
+| **Enemies and bosses** (v1.1/v1.2) | 60 ticks/s | **1.5× faster in every sense** — AI timers, movement, attacks, projectiles, hitboxes *and* animation, all together (the object gets 3 update ticks and 3 animation steps every 2 frames; v1.1 shipped 1.25×). Klonoa, items, moving platforms/traps and the camera stay at normal speed. **Not affected**: an enemy while Klonoa holds it (and its held-timer), a thrown enemy, Polonte the Hatchling, King of Sorrow phase 1, the Biskarsh tank in the Volk Inferno chase (the regular enemies of that area are still 1.25×), scripted mini-bosses (Pop-Up Tat) and the boss "comeback" capsules. |
 | Damage per hit, knockback, i-frames, 1UP at 100/200 stones | — | unchanged |
 
 ## How to apply
@@ -36,11 +36,11 @@ Change the last byte: `24010004` = 25 %, `2401000A` = 10 %, `24010002` = 50 %, `
 
 The id is a 64-bit value built by 6 words in the code cave (see the pnach comments: `lui/ori/dsll/ori/dsll/ori`). Default `000C80C85CA00400`. Candidates (all in-game SFX, picked by usage context — menu/HUD): `004B04B05CA00401`, `004B04B05CA00402`; or `004B04B01CA00303` (blue Dream Stone sound). The clean way is to change `FAIL_SFX` in `build_hardmode.py` and rerun; for quick A/B, edit the four 16-bit halves in words 1, 2, 4 and 6 of the block in the pnach.
 
-## Tuning the enemy/boss speed (v1.1)
+## Tuning the enemy/boss speed (v1.1+)
 
 All knobs are plain words in the pnach (comments mark them) or constants at the top of `build_hardmode.py`:
 
-- **Speed factor** — `TICK_MASK` (two identical `andi at,at,N` words, marked `KNOB TICK_MASK`; edit both): the extra tick happens when `frame & N == 0`, so speed = `1 + 1/(N+1)`. `N=3` → **1.25×** (default), `1` → 1.5×, `7` → 1.125×, `0` → 2×, `FFFF` → effectively off.
+- **Speed factor** — `TICK_MASK` (two identical `andi at,at,N` words, marked `KNOB TICK_MASK`; edit both): the extra tick happens when `frame & N == 0`, so speed = `1 + 1/(N+1)`. `N=1` → **1.5×** (v1.2 default), `3` → 1.25× (v1.1), `2` → 1.33×, `7` → 1.125×, `0` → 2×, `FFFF` → effectively off.
 - **Which enemies** — `MASK_ENEMY` (word at `0x266A38`): bit *b* = kind-3 subtype `0x800+b`. Default `0003F97F` = classes `0x800–0x806, 0x808, 0x80B–0x811` (the ones that use the enemy hit/capture handler). `FLAG_200A` (`0x266A3C`) adds subtype `0x200A`.
 - **Which bosses** — `MASK_BOSS` (two words at `0x266A40/0x266A44`, bit = kind-7 subtype 0–63). Default whitelists the boss actors and their children: `0x01 0x03 0x04 0x07 0x13 0x1A 0x1F 0x23 0x24 0x29`. Not whitelisted on purpose: `0x0A` (Polonte), `0x10` (King of Sorrow phase 1), `0x22` (Biskarsh chase tank), `0x14` (comeback capsules), every level/cutscene script.
 - **Excluded levels** — list of level ids (`g_game+4` = RAM `0x366454`) from `0x266A48`, terminated by `FFFFFFFF`. Default `{0x1B00}` (King of Sorrow phase 1 — it shares child subtypes `0x1A/0x1F` with other bosses).
@@ -61,7 +61,7 @@ To find a level id or an object's kind/subtype in PCSX2: Debug → Memory, read 
 
 ## In-game validation checklist for v1.1
 
-1. Regular stage: enemies visibly faster (walk/attack/animation in sync); Klonoa, platforms, items, camera normal.
+1. Regular stage: enemies visibly faster (walk/attack/animation in sync); Klonoa, platforms, items, camera normal. *(v1.1 result: OK per play-test.)*
 2. Capture an enemy: normal speed while held (and its fuse, if any), normal throw.
 3. Whitelisted boss (e.g. the first one, level `0x1500`): attacks, projectiles and animation faster, no "waiting" at the end of animations.
 4. Polonte, King of Sorrow phase 1 and the Biskarsh chase tank at normal speed; King of Sorrow later phases faster. If a level/boss mapping is off, fix `MASK_BOSS`/`EXCL_LEVELS` (read `0x366454` in that fight).
