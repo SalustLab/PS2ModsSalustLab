@@ -1,8 +1,9 @@
-SHA-256 (v1.2, 2026-08-30: v1.0 set + enemies/bosses 1.5x via selective extra tick (TICK_MASK=1); v1.1 (1.25x) was play-tested OK, exclusion checklist still open)
+SHA-256 (v1.3, 2026-08-30: v1.0 set + enemies/bosses 1.5x via selective extra tick (TICK_MASK=1); enemy class 0x80B (Biskarsh chase tank, level 0x0801) excluded; Polonte/KoS-1/Tat exclusions still inferred)
 original ISO : 51bb8359a2d827f3259f286719947e27b76e8f1d1f502301e35f76781f49339e  Klonoa 2 - Lunatea's Veil (USA).iso
-Hard Mode ISO: 27724d2c8fc8faaef2f476f3331cd18c048887370f4783e37edd8d28d15090d0  Klonoa 2 - Lunatea's Veil (USA) [Hard Mode].iso
-xdelta       : 31315ec5a62944b8be9a42415cd79fdd7172ad0608ca08fee37ee5a192bc34f5  Klonoa2_HardMode.xdelta
+Hard Mode ISO: e778b9999fb2c7604f64b3d20bb06916456309be4b4f8c2aebdb4e01cc03a61c  Klonoa 2 - Lunatea's Veil (USA) [Hard Mode].iso
+xdelta       : 405102e27269257224d860cc6b1aeca9416c4935dd37ded63edc2cbc066d6e20  Klonoa2_HardMode.xdelta
 (xdelta round-trip decode reproduced the Hard Mode hash exactly)
 
+v1.2 (for reference, 1.5x, tank not excluded): Hard Mode ISO 27724d2c8fc8faaef2f476f3331cd18c048887370f4783e37edd8d28d15090d0, xdelta 31315ec5a62944b8be9a42415cd79fdd7172ad0608ca08fee37ee5a192bc34f5
 v1.1 (for reference, 1.25x): Hard Mode ISO 32b6b1a28d71d33946d9a4ee1cc1f56683ca7644fc4ef096ba31d9b720f56aa8, xdelta a5dfc3b46617e33ba1d8b8619808c218861f0969059e4c63a3d561dc6fa5fab8
 v1.0 (for reference): Hard Mode ISO 228a82f8aae4bc959293b3d87fb592cba7e72d7f0f12802f8b8a427426ccdc01, xdelta 9936cfbb8b415bc5851aaf0fec07453a0d1b0412a324972258e6dee84f2fe799
