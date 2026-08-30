@@ -1,6 +1,6 @@
 # PS2ModsSalustLab
 
-PlayStation 2 game mods, delivered as xdelta patches (for ISOs) and PCSX2 pnach files. No game data is redistributed — you need your own dump of each game.
+PlayStation 2 game mods made by me to cater to my very specific needs that could also be your own needs, delivered as xdelta patches (for ISOs) and PCSX2 pnach files. No game data is redistributed, you need your own dump of each game.
 
 | Mod | Game | Path |
 |---|---|---|
