@@ -4,6 +4,6 @@ PlayStation 2 game mods made by me to cater to my very specific needs that could
 
 | Mod | Game | Path |
 |---|---|---|
-| Hard Mode v1.0 | Klonoa 2: Lunatea's Veil (USA, SLUS-20151) | [`mods/klonoa2/klonoa2_hard_mode`](mods/klonoa2/klonoa2_hard_mode) |
+| Hard Mode v1.1 | Klonoa 2: Lunatea's Veil (USA, SLUS-20151) | [`mods/klonoa2/klonoa2_hard_mode`](mods/klonoa2/klonoa2_hard_mode) |
 
 Licensed under the [MIT License](LICENSE).

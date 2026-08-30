@@ -1,6 +1,6 @@
-# Klonoa 2: Lunatea's Veil (USA) — Hard Mode **v1.0** (2026-08-30)
+# Klonoa 2: Lunatea's Veil (USA) — Hard Mode **v1.1** (2026-08-30)
 
-Tested in-game on PCSX2 (every point validated). Patch for `SLUS_201.51` (NTSC-U, PCSX2 CRC `2F56CBC9`). Only the executable changes (78 words); no asset is touched.
+Patch for `SLUS_201.51` (NTSC-U, PCSX2 CRC `2F56CBC9`). Only the executable changes (230 words); no asset is touched. v1.0 items were tested in-game on PCSX2; the v1.1 speed-up is verified by disassembly and **awaits in-game validation** (see the checklist at the end).
 
 ## What changes
 
@@ -13,6 +13,7 @@ Tested in-game on PCSX2 (every point validated). Patch for `SLUS_201.51` (NTSC-U
 | Boss "comeback" (1UP capsules when `lives < 3`, up to 2× per session) | active | **removed** |
 | Starting lives | 3 | **2** (0 is still playable → 3 attempts; applies to a **new save** — an existing save keeps its stored lives) |
 | Max lives | 99 | **4** |
+| **Enemies and bosses** (v1.1) | 60 ticks/s | **1.25× faster in every sense** — AI timers, movement, attacks, projectiles, hitboxes *and* animation, all together (the object gets 5 update ticks and 5 animation steps every 4 frames). Klonoa, items, moving platforms/traps and the camera stay at normal speed. **Not affected**: an enemy while Klonoa holds it (and its held-timer), a thrown enemy, Polonte the Hatchling, King of Sorrow phase 1, the Biskarsh tank in the Volk Inferno chase (the regular enemies of that area are still 1.25×), scripted mini-bosses (Pop-Up Tat) and the boss "comeback" capsules. |
 | Damage per hit, knockback, i-frames, 1UP at 100/200 stones | — | unchanged |
 
 ## How to apply
@@ -35,6 +36,18 @@ Change the last byte: `24010004` = 25 %, `2401000A` = 10 %, `24010002` = 50 %, `
 
 The id is a 64-bit value built by 6 words in the code cave (see the pnach comments: `lui/ori/dsll/ori/dsll/ori`). Default `000C80C85CA00400`. Candidates (all in-game SFX, picked by usage context — menu/HUD): `004B04B05CA00401`, `004B04B05CA00402`; or `004B04B01CA00303` (blue Dream Stone sound). The clean way is to change `FAIL_SFX` in `build_hardmode.py` and rerun; for quick A/B, edit the four 16-bit halves in words 1, 2, 4 and 6 of the block in the pnach.
 
+## Tuning the enemy/boss speed (v1.1)
+
+All knobs are plain words in the pnach (comments mark them) or constants at the top of `build_hardmode.py`:
+
+- **Speed factor** — `TICK_MASK` (two identical `andi at,at,N` words, marked `KNOB TICK_MASK`; edit both): the extra tick happens when `frame & N == 0`, so speed = `1 + 1/(N+1)`. `N=3` → **1.25×** (default), `1` → 1.5×, `7` → 1.125×, `0` → 2×, `FFFF` → effectively off.
+- **Which enemies** — `MASK_ENEMY` (word at `0x266A38`): bit *b* = kind-3 subtype `0x800+b`. Default `0003F97F` = classes `0x800–0x806, 0x808, 0x80B–0x811` (the ones that use the enemy hit/capture handler). `FLAG_200A` (`0x266A3C`) adds subtype `0x200A`.
+- **Which bosses** — `MASK_BOSS` (two words at `0x266A40/0x266A44`, bit = kind-7 subtype 0–63). Default whitelists the boss actors and their children: `0x01 0x03 0x04 0x07 0x13 0x1A 0x1F 0x23 0x24 0x29`. Not whitelisted on purpose: `0x0A` (Polonte), `0x10` (King of Sorrow phase 1), `0x22` (Biskarsh chase tank), `0x14` (comeback capsules), every level/cutscene script.
+- **Excluded levels** — list of level ids (`g_game+4` = RAM `0x366454`) from `0x266A48`, terminated by `FFFFFFFF`. Default `{0x1B00}` (King of Sorrow phase 1 — it shares child subtypes `0x1A/0x1F` with other bosses).
+- **Excluded species** — list of enemy species ids (`obj->0x18->0xE`) from `0x266A50`, terminated by `FFFFFFFF`. Empty by default; use it if a specific kind-3 enemy must stay at normal speed.
+
+To find a level id or an object's kind/subtype in PCSX2: Debug → Memory, read `0x366454` (level id), or inspect the 128-slot object array (base pointer at `0x36EB00`, stride `0xF0`; `+0x1C` kind, `+0x1E` subtype). The clean way to change anything is editing the constants and rerunning `build_hardmode.py`.
+
 ## Addresses (EE, for auditing)
 
 - `g_game = 0x00366450`; HP `+0x400` (`0x366850`), lives `+0x408` (`0x366858`).
@@ -44,8 +57,16 @@ The id is a 64-bit value built by 6 words in the code cave (see the pnach commen
 - Heal roll: hook `0x1D4104` (the small-heart case's `addiu v0,v0,1` in the pickup handler → `jal`) → code cave `0x32DF14–0x32DFF0` (zeroed padding at the end of `.text`): saves regs, calls the game RNG (`0x1227C8`), `divu` by N, heals only if the remainder is 0. Double heart (`0x1D416C`) untouched.
 - Heart pickup sound: the normal sound (`004B04B01CA00301`) is played by the *effect-queue processor* (`0x1D39F8`; case `0x815` at `0x1D3A78` → common block `0x1D3CD8` → `0x1F9D28`), not by the pickup handler (which only queues the effect via `0x1D3858`). The `b` at `0x1D3A90` becomes a stub that, if the RAM flag `0x32DFFC` (set by the cave on failure) is on, consumes it, **zeroes the queue entry** (the queue is rescanned every frame and only `0x1F9D28` disarms an entry after playing — without zeroing, the ding would play one frame later) and skips the sound. Double (`0x814`, id `…0300`) has its own path and is unaffected.
 
-## Investigated and deferred: bosses 1.25× faster
+- Speed-up (v1.1): the game is fixed-step (60 ticks/s, no delta time). One loop updates every object (`0x1A5BE8`: 128 slots × `0xF0`, `jalr [0x375C00 + kind*4](obj)` at `0x1A5C54`) and three render passes call each object's draw callbacks (`0x18DE88/0x18DEF8/0x18DF68`, `jalr obj->4/8/0xC` at `0x18DECC/0x18DF3C/0x18DFAC`); the draw callback is what advances animations (`0x20F448 → 0x20AC00 → 0x20DF90`, `frame += speed` at `0x20E14C/0x20E180/0x20E1E0`). The four hooks `jal` into a cave placed in a dead function (`0x266A30`, one of 8 identical never-referenced copies): `QUALIFIES(obj)` = kind 3 with subtype in `MASK_ENEMY`/`0x200A`, or kind 7 with subtype in `MASK_BOSS`, minus excluded levels/species. Update hook: after the normal tick, if `frame & TICK_MASK == 0` and the object still qualifies (re-checked *after* the tick — a captured enemy has already become kind 2, a dead one kind 0), run the update once more with the RAM flag `0x266A30` set. Render hook: same test, sets flag `0x266A34` around the draw callback; the three animation sites add `speed` a second time while that flag is on. Held enemies are kind 2 (`0x1E1000` converts the object on capture), thrown ones kind 1 — never qualified. Bosses are kind-7 state machines created per level by the hub `0x1228E8` (`0x1500→0x23`, `0x1600→0x01`, `0x1700→0x03`, `0x1800→0x0A`, `0x1A00→0x04`, `0x1B00→0x10`, `0x1B01→0x29`, `0x1B02→0x13`, `0x1102→0x22` chase script).
 
-Animation system mapped: model allocated by `0x20F820(id)` (id at `model+0x94`); 4 animation slots per node from `+0x130` (`+0x130` frame, `+0x134` length, `+0x138` speed); advance `frame += speed` in `0x20DF90` (`0x20E144–0x20E150`), called per model at `0x20AC34`. A hook there with `if (model->0x94 ∈ boss_table) speed *= 1.25` is feasible (design in the plan), but it only speeds up the *animation* — AI timers, projectiles and movement live in code and do not speed up, which can leave a boss "waiting" at the end of an animation or fire a hitbox early. Boss model IDs (range `0x357–0x3A7`) not yet validated in-game. Decision: not included in this version.
+## In-game validation checklist for v1.1
+
+1. Regular stage: enemies visibly faster (walk/attack/animation in sync); Klonoa, platforms, items, camera normal.
+2. Capture an enemy: normal speed while held (and its fuse, if any), normal throw.
+3. Whitelisted boss (e.g. the first one, level `0x1500`): attacks, projectiles and animation faster, no "waiting" at the end of animations.
+4. Polonte, King of Sorrow phase 1 and the Biskarsh chase tank at normal speed; King of Sorrow later phases faster. If a level/boss mapping is off, fix `MASK_BOSS`/`EXCL_LEVELS` (read `0x366454` in that fight).
+5. Pop-Up Tat at normal speed; if not, add its species/level to the exclusion lists.
+6. Classes `0x807`/`0x80A` (spawner-like, not in `MASK_ENEMY`): if some enemy type is *not* faster, add its bit.
+7. ~30 min without crash or soft-lock; v1.0 behaviour (HP 2, 20 % hearts, lives 2/4, no comeback) unchanged.
 
 Generated by `build_hardmode.py` (Python + capstone); every site is verified by disassembly before/after.

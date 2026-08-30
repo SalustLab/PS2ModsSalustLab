@@ -1,5 +1,7 @@
-SHA-256 (v1.0 = build v7, tested in-game 2026-08-30: HP 2, no boss comeback, small heart heals 20% + fail cue replaces the ding at HP<2, Double guaranteed, 2 starting lives, max 4)
+SHA-256 (v1.1, 2026-08-30: v1.0 set + enemies/bosses 1.25x via selective extra tick; v1.0 items tested in-game, v1.1 speed-up verified by disassembly, in-game validation pending)
 original ISO : 51bb8359a2d827f3259f286719947e27b76e8f1d1f502301e35f76781f49339e  Klonoa 2 - Lunatea's Veil (USA).iso
-Hard Mode ISO: 228a82f8aae4bc959293b3d87fb592cba7e72d7f0f12802f8b8a427426ccdc01  Klonoa 2 - Lunatea's Veil (USA) [Hard Mode].iso
-xdelta       : 9936cfbb8b415bc5851aaf0fec07453a0d1b0412a324972258e6dee84f2fe799  Klonoa2_HardMode.xdelta
+Hard Mode ISO: 32b6b1a28d71d33946d9a4ee1cc1f56683ca7644fc4ef096ba31d9b720f56aa8  Klonoa 2 - Lunatea's Veil (USA) [Hard Mode].iso
+xdelta       : a5dfc3b46617e33ba1d8b8619808c218861f0969059e4c63a3d561dc6fa5fab8  Klonoa2_HardMode.xdelta
 (xdelta round-trip decode reproduced the Hard Mode hash exactly)
+
+v1.0 (for reference): Hard Mode ISO 228a82f8aae4bc959293b3d87fb592cba7e72d7f0f12802f8b8a427426ccdc01, xdelta 9936cfbb8b415bc5851aaf0fec07453a0d1b0412a324972258e6dee84f2fe799
