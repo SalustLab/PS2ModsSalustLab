@@ -2,7 +2,7 @@
 
 A difficulty mod for the USA version of Klonoa 2 on PS2 (`SLUS_201.51`, NTSC-U). It makes the game harder in a few focused ways: less health, fewer lives, less healing, and faster enemies and bosses. Nothing else is touched. All changes were play-tested.
 
-You need your own copy of the original ISO (PCSX2 shows its CRC as `2F56CBC9`).
+You need your own copy of the original NTSC-U ISO.
 
 ## What changes
 
