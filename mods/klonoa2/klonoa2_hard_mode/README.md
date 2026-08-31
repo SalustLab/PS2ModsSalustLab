@@ -9,11 +9,11 @@ You need your own copy of the original NTSC-U ISO.
 | Change | Original | Hard Mode | Notes |
 |---|---|---|---|
 | Maximum HP | 3 HP | 2 HP | Every hit matters more, leaving less room for mistakes. |
-| Small Heart | Guaranteed heal | 20% chance to heal | If collected at 1 HP and the heal roll fails, a warning sound plays. At full HP, the normal pickup sound plays. |
+| Small Heart | Guaranteed heal | 20% chance to heal | If collected at 1 HP and the heal roll fails, a warning sound cue plays. When a roll succeeds, the normal pickup sound plays. |
 | Double Heart / Large Heart | Guaranteed heal | Guaranteed heal | Left unchanged because it is a rare item deliberately placed by the level designers. |
 | Starting Lives | 3 | 2 | Fewer attempts available from the start. |
-| Maximum Lives | 99 | 4 | Because the game still lets you play at 0 lives, this means up to 5 attempts total. |
-| Stage 1UPs | Always grants 1 life | 50% chance to work | 1UPs earned from collecting 100 Dream Stones are still guaranteed. |
+| Maximum Lives | 99 | 4 | Because the game still lets you play at 0 lives, this means up to 5 lives total. |
+| Stage 1UPs | Always grants 1 life | 50% chance to give you 1 life | 1UPs earned from collecting 100 Dream Stones are still guaranteed. |
 | Boss Comeback 1UP and 1HP | May appear when the player is struggling | Removed | Bosses no longer drop a life capsule or small heart as an emergency comeback mechanic. |
 | Stage Enemies | Normal speed | 1.5x faster | Movement, projectiles, and animations are all accelerated. |
 | Bosses | Normal speed | 1.5x overall | Folgaran (first boss): 2.75x. Leptio (second boss): 1.25x. Biskarsh (third boss): 1.5x. Polonte (fourth boss): vanilla speed. Leorina (fifth boss): 1.5x. King of Sorrow (final boss): 1.5x. |
